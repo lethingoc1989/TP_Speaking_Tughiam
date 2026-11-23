@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5分スピーチ 自主練習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#A23A28; --red-d:#7E2B1D; --brown:#564B3C; --tint:#F5EBE9; --must:#E8B54D;
+  --ink:#2E2721; --muted:#7A7066; --line:#E4DCD3; --bg:#FBF8F4; --card:#FFFFFF;
+  --ok:#3E7C4A; --ok-bg:#E8F2E9; --ng:#B3402B; --ng-bg:#FBE9E5;
+  --sky:#6B7F99; --olive:#7E8A3A; --amber:#C27F2A; --plum:#7A5C8E;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 "Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+header.top{background:var(--red);color:#fff;padding:14px 0 0}
+header.top .row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+header.top h1{margin:0;font-size:20px;font-weight:700}
+header.top .who{font-size:13px;color:#F6DCD5}
+header.top .who button{background:transparent;border:1px solid #F6DCD5;color:#fff;border-radius:6px;padding:2px 10px;margin-left:8px;font-size:12px}
+nav.tabs{display:flex;gap:4px;margin-top:12px;overflow-x:auto}
+nav.tabs button{background:transparent;border:0;color:#F6DCD5;padding:8px 14px;border-radius:8px 8px 0 0;font-weight:500;white-space:nowrap}
+nav.tabs button.on{background:var(--bg);color:var(--red)}
+main{padding:18px 0 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.card h2{margin:0 0 8px;font-size:17px}
+.muted{color:var(--muted);font-size:13px}
+.hide{display:none!important}
+.btn{background:var(--red);color:#fff;border:0;border-radius:8px;padding:9px 18px;font-weight:700}
+.btn:hover{background:var(--red-d)}
+.btn:disabled{background:#C9BFB6;cursor:not-allowed}
+.btn.sub{background:#fff;color:var(--red);border:1px solid var(--red)}
+.btn.sm{padding:4px 10px;font-size:13px;font-weight:500}
+.btn.big{font-size:20px;padding:14px 28px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);margin-bottom:10px}
+label.f input,label.f select,label.f textarea{font-size:15px;color:var(--ink);padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}
+textarea{width:100%;min-height:70px;resize:vertical;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
+.err{color:var(--ng);font-size:14px;margin-top:6px;white-space:pre-wrap}
+.msg{background:var(--tint);border-radius:8px;padding:10px 14px;margin:8px 0}
+.msg.ok{background:var(--ok-bg);color:var(--ok)}
+.msg.ng{background:var(--ng-bg);color:var(--ng)}
+/* login */
+.login{max-width:420px;margin:30px auto}
+/* topic + timer */
+.theme-no{display:inline-block;background:var(--red);color:#fff;border-radius:999px;padding:2px 12px;font-weight:700;font-size:14px}
+.theme{font-size:20px;font-weight:700;line-height:1.6;margin:10px 0 4px}
+.phase{font-size:14px;font-weight:700;color:var(--muted);letter-spacing:.05em}
+.clock{font-size:72px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1;margin:4px 0}
+.clock.warn{color:var(--amber)} .clock.hot{color:var(--ng)}
+.bar{position:relative;height:16px;background:#EFE8E1;border-radius:999px;overflow:hidden;margin:10px 0 4px}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;background:var(--red);width:0}
+.parts{position:relative;height:40px;font-size:11px;color:var(--muted)}
+.parts span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap;text-align:center}
+.parts span b{display:block;font-size:12px;color:var(--ink)}
+.nowpart{font-size:22px;font-weight:700;margin-top:6px}
+.rec-dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--ng);margin-right:6px;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.25}}
+.meter{height:10px;background:#EFE8E1;border-radius:999px;overflow:hidden;max-width:320px}
+.meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .08s}
+.map{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:10px;font-size:12px;text-align:center}
+.map div{border-radius:6px;padding:4px 2px;color:#fff}
+/* lists */
+.item{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px;background:#fff}
+.item .head{display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;flex-wrap:wrap}
+.item .head .t{font-weight:700}
+.badge{display:inline-block;font-size:11px;border-radius:999px;padding:1px 8px;margin-left:4px;background:var(--tint);color:var(--red);font-weight:700;vertical-align:middle}
+.badge.g{background:var(--ok-bg);color:var(--ok)} .badge.y{background:#FFF3D9;color:#8A6411} .badge.b{background:#E9EEF5;color:var(--sky)}
+.item .body{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+audio{width:100%;margin:6px 0}
+.crit{display:grid;grid-template-columns:150px 1fr;gap:6px 10px;align-items:center;margin:8px 0}
+.crit .lb{font-size:13px}
+.crit .lb small{display:block;color:var(--muted);font-size:11px;line-height:1.3}
+.seg{display:inline-flex;justify-self:start;width:max-content;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:3px 0;width:44px;font-size:16px;flex:none}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--red);color:#fff}
+.nx{border-left:4px solid var(--line);padding:6px 10px;margin:8px 0;background:var(--bg);border-radius:0 8px 8px 0}
+.nx.gv{border-left-color:var(--red);background:var(--tint)}
+.nx .w{font-size:12px;color:var(--muted)}
+.nx .marks{font-size:15px;letter-spacing:.1em}
+.nx p{margin:2px 0;white-space:pre-wrap}
+.ts{font-size:12px;margin:4px 0 2px}
+table.st{width:100%;border-collapse:collapse;font-size:14px}
+table.st th,table.st td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:middle}
+table.st th{background:var(--tint);font-size:13px}
+.topics{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fff}
+.topics label{font-size:13px;display:flex;gap:6px;align-items:flex-start;line-height:1.4}
+.topics h4{grid-column:1/-1;margin:6px 0 0;font-size:13px;color:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+/* bốc đề */
+.roll{width:150px;height:150px;margin:14px auto;border-radius:24px;background:var(--tint);color:var(--red);border:3px solid var(--red);
+  display:flex;align-items:center;justify-content:center;font-size:64px;font-weight:700;font-variant-numeric:tabular-nums}
+.roll.spin{animation:shake .25s infinite}
+@keyframes shake{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@media (max-width:640px){
+  .clock{font-size:54px}.theme{font-size:17px}
+  .crit{grid-template-columns:1fr}
+  .topics,.grid2{grid-template-columns:1fr}
+  .map{font-size:10px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="row">
+      <h1>5分スピーチ 自主練習</h1>
+      <div class="who" id="who"></div>
+    </div>
+    <nav class="tabs" id="tabs"></nav>
+  </div>
+</header>
+<main class="wrap" id="app"></main>
+
+<script>
+/* ─────────────────────────── CÀI ĐẶT ───────────────────────────
+   Dán link /exec của Apps Script vào giữa hai dấu nháy dưới đây. */
+const API_URL = 'DAN_LINK_EXEC_VAO_DAY';
+// Tên khóa lưu đăng nhập — khác trang ghi âm trên lớp để hai trang không đè lên nhau
+const KEY_HS = 'spk_tl_hs', KEY_GV = 'spk_tl_gv';
+/* ─────────────────────────────────────────────────────────────── */
+
+const CRIT = [
+  ['導入', '前置き・意見・理由の数'],
+  ['理由', '違う角度・中心文がはっきり'],
+  ['中身', '例や経験などで、理由がよくわかる'],
+  ['反対意見', '確かに → しかし → 支える'],
+  ['結論・時間', '4:00ごろに結論、5分以内'],
+];
+const PARTS = [['導入', 0, 'var(--sky)'], ['理由①', 30, 'var(--olive)'], ['理由②', 105, 'var(--amber)'], ['反対意見', 180, 'var(--plum)'], ['結論', 240, 'var(--red)']];
+const $ = (s, r = document) => r.querySelector(s);
+const app = $('#app');
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const mmss = s => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} },
+};
+let offset = 0; // giờ máy chủ − giờ máy
+const now = () => Date.now() + offset;
+
+async function api(a, data = {}) {
+  if (!/^https:\/\//.test(API_URL)) throw new Error('Chưa dán link /exec vào API_URL trong file HTML.');
+  let res;
+  try {
+    res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(Object.assign({ a }, data)) });
+  } catch (e) { throw new Error('通信エラー（インターネット接続を確認してください）'); }
+  let j;
+  try { j = await res.json(); } catch (e) { throw new Error('サーバーの応答が読めません。'); }
+  if (j.now) offset = j.now - Date.now();
+  if (!j.ok) throw new Error(j.loi || 'エラー');
+  return j;
+}
+
+/* ─────────────────────────── khung chung ─────────────────────────── */
+let timers = [];
+function clearTimers() { timers.forEach(t => clearInterval(t)); timers = []; }
+function every(ms, fn) { const t = setInterval(fn, ms); timers.push(t); return t; }
+function setTabs(list, on, onClick) {
+  const nav = $('#tabs');
+  nav.innerHTML = list.map(([k, t]) => `<button data-k="${k}" class="${k === on ? 'on' : ''}">${t}</button>`).join('');
+  nav.querySelectorAll('button').forEach(b => b.onclick = () => onClick(b.dataset.k));
+}
+function setWho(html) { $('#who').innerHTML = html; }
+function b64ToUrl(b64, mime) {
+  const bin = atob(b64); const u = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+  return URL.createObjectURL(new Blob([u], { type: mime || 'audio/webm' }));
+}
+// File webm ghi bằng trình duyệt không có thời lượng → tua đến cuối một lần để trình duyệt tính được, nhờ đó tua được
+function fixDur(root) {
+  (root || document).querySelectorAll('audio').forEach(a => {
+    if (a.dataset.fx) return; a.dataset.fx = 1;
+    a.addEventListener('loadedmetadata', () => {
+      if (a.duration !== Infinity && !isNaN(a.duration)) return;
+      const back = () => { a.removeEventListener('timeupdate', back); a.currentTime = 0; };
+      a.addEventListener('timeupdate', back);
+      try { a.currentTime = 1e101; } catch (e) {}
+    }, { once: true });
+  });
+}
+function blobToB64(blob) {
+  return new Promise((ok, ng) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1]); r.onerror = ng; r.readAsDataURL(blob); });
+}
+function marks(tc) { return (tc || '').split('').map((m, i) => `<span title="${esc(CRIT[i] ? CRIT[i][0] : '')}">${esc(CRIT[i] ? CRIT[i][0] : '')}${esc(m)}</span>`).join('　'); }
+function insertTime(ta, audio) {
+  if (!audio || !ta) return;
+  const tag = '[' + mmss(audio.currentTime || 0) + '] ';
+  const p = ta.selectionStart != null ? ta.selectionStart : ta.value.length;
+  ta.value = ta.value.slice(0, p) + (p && ta.value[p - 1] !== '\n' ? '\n' : '') + tag + ta.value.slice(p);
+  ta.focus();
+}
+function critForm(prefix, tc) {
+  const v = (tc || '').split('');
+  return `<div class="crit">${CRIT.map((c, i) => `
+    <div class="lb">${i + 1}. ${c[0]}<small>${c[1]}</small></div>
+    <div class="seg" data-crit="${i}">${['○', '△', '×'].map(m => `<button type="button" data-m="${m}" class="${v[i] === m ? 'on' : ''}">${m}</button>`).join('')}</div>`).join('')}</div>`;
+}
+function wireCrit(root) {
+  root.querySelectorAll('.seg').forEach(seg => seg.querySelectorAll('button').forEach(b => b.onclick = () => {
+    const was = b.classList.contains('on');
+    seg.querySelectorAll('button').forEach(x => x.classList.remove('on'));
+    if (!was) b.classList.add('on');
+  }));
+}
+function readCrit(root) {
+  return [...root.querySelectorAll('.seg')].map(seg => { const o = seg.querySelector('button.on'); return o ? o.dataset.m : '−'; }).join('');
+}
+function nxHtml(n, ja = true) {
+  const gv = n.vai === 'gv';
+  const who = gv ? (ja ? '先生' : 'Giáo viên') : esc(n.nguoi);
+  return `<div class="nx ${gv ? 'gv' : ''}">
+    <div class="w">${who}${n.luc ? '　' + new Date(n.luc).toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}</div>
+    ${gv && n.diem ? `<div><b>${ja ? '点数' : 'Điểm'}：${esc(n.diem)}</b></div>` : ''}
+    ${n.tc && /[○△×]/.test(n.tc) ? `<div class="marks">${marks(n.tc)}</div>` : ''}
+    ${n.tot ? `<p><b>${ja ? 'よかったところ' : 'Điểm tốt'}：</b>${esc(n.tot)}</p>` : ''}
+    ${n.sua ? `<p><b>${ja ? '直すところ' : 'Cần sửa'}：</b>${esc(n.sua)}</p>` : ''}
+    ${n.chua ? `<p><b>${ja ? '先生の直し' : 'Chữa câu'}：</b>\n${esc(n.chua)}</p>` : ''}
+  </div>`;
+}
+
+/* ─────────────────────────── đăng nhập ─────────────────────────── */
+async function showLogin(err) {
+  clearTimers(); stopMedia();
+  setTabs([], '', () => {}); setWho('');
+  app.innerHTML = `<div class="card login">
+    <h2>ログイン</h2>
+    <label class="f">名前<select id="lgName"><option value="">読み込み中…</option></select></label>
+    <label class="f">PIN<input id="lgPin" inputmode="numeric" autocomplete="off" placeholder="先生からもらった番号"></label>
+    <button class="btn" id="lgGo">ログイン</button>
+    <div class="err" id="lgErr">${esc(err || '')}</div>
+    <p class="muted" style="margin-top:18px">Giáo viên: <a href="#" id="lgGv">đăng nhập giáo viên</a></p>
+  </div>`;
+  $('#lgGv').onclick = e => { e.preventDefault(); showGvLogin(); };
+  $('#lgGo').onclick = async () => {
+    const ten = $('#lgName').value, pin = $('#lgPin').value.trim();
+    if (!ten || !pin) { $('#lgErr').textContent = '名前とPINを入れてください。'; return; }
+    $('#lgGo').disabled = true; $('#lgErr').textContent = '';
+    try { await api('dangNhapHS', { ten, pin }); store.set(KEY_HS, { ten, pin }); startStudent(); }
+    catch (e) { $('#lgErr').textContent = e.message; $('#lgGo').disabled = false; }
+  };
+  $('#lgPin').onkeydown = e => { if (e.key === 'Enter') $('#lgGo').click(); };
+  try {
+    const r = await api('dsHocSinh');
+    if (!$('#lgName')) return;
+    $('#lgName').innerHTML = '<option value="">― 名前を選ぶ ―</option>' + r.hs.map(t => `<option>${esc(t)}</option>`).join('');
+  } catch (e) { if ($('#lgErr')) $('#lgErr').textContent = e.message; }
+}
+function showGvLogin() {
+  app.innerHTML = `<div class="card login">
+    <h2>Đăng nhập giáo viên</h2>
+    <label class="f">Mật khẩu<input id="gvMk" type="password"></label>
+    <button class="btn" id="gvGo">Đăng nhập</button>
+    <div class="err" id="gvErr"></div>
+    <p class="muted" style="margin-top:18px"><a href="#" id="gvBack">← 生徒のログイン</a></p>
+  </div>`;
+  $('#gvBack').onclick = e => { e.preventDefault(); showLogin(); };
+  $('#gvMk').onkeydown = e => { if (e.key === 'Enter') $('#gvGo').click(); };
+  $('#gvGo').onclick = async () => {
+    const mk = $('#gvMk').value;
+    $('#gvGo').disabled = true; $('#gvErr').textContent = '';
+    try { await api('dangNhapGV', { mk }); store.set(KEY_GV, mk); startTeacher(); }
+    catch (e) { $('#gvErr').textContent = e.message; $('#gvGo').disabled = false; }
+  };
+}
+function logout() { store.del(KEY_HS); store.del(KEY_GV); showLogin(); }
+
+/* ─────────────────────────── micro + ghi âm ─────────────────────────── */
+const M = { stream: null, ctx: null, an: null, rec: null, chunks: [], t0: 0, mime: '', meterEl: null, raf: 0, wake: null };
+async function getMic() {
+  if (M.stream && M.stream.active) return M.stream;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('このブラウザでは録音できません。ChromeかSafariの最新版を使ってください。');
+  M.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+  try {
+    M.ctx = M.ctx || new (window.AudioContext || window.webkitAudioContext)();
+    if (M.ctx.state === 'suspended') M.ctx.resume().catch(() => {});
+    const src = M.ctx.createMediaStreamSource(M.stream);
+    M.an = M.ctx.createAnalyser(); M.an.fftSize = 512; src.connect(M.an);
+    meterLoop();
+  } catch (e) { /* đồng hồ âm lượng không bắt buộc */ }
+  return M.stream;
+}
+function meterLoop() {
+  cancelAnimationFrame(M.raf);
+  const buf = new Uint8Array(512);
+  const tick = () => {
+    if (M.an) {
+      M.an.getByteTimeDomainData(buf);
+      let s = 0; for (const v of buf) { const x = (v - 128) / 128; s += x * x; }
+      const lvl = Math.min(1, Math.sqrt(s / buf.length) * 4);
+      document.querySelectorAll('.meter i').forEach(el => el.style.width = (lvl * 100).toFixed(0) + '%');
+    }
+    M.raf = requestAnimationFrame(tick);
+  };
+  tick();
+}
+function pickMime() {
+  if (!window.MediaRecorder) return '';
+  for (const t of ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'])
+    if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) return t;
+  return '';
+}
+function startRec() {
+  const mime = pickMime();
+  const opts = { audioBitsPerSecond: 32000 }; if (mime) opts.mimeType = mime;
+  M.rec = new MediaRecorder(M.stream, opts);
+  M.chunks = []; M.mime = M.rec.mimeType || mime || 'audio/webm';
+  M.rec.ondataavailable = e => { if (e.data && e.data.size) M.chunks.push(e.data); };
+  M.rec.start(1000); M.t0 = Date.now();
+}
+function stopRec() {
+  return new Promise(ok => {
+    if (!M.rec || M.rec.state === 'inactive') return ok(null);
+    M.rec.onstop = () => ok({ blob: new Blob(M.chunks, { type: M.mime }), giay: (Date.now() - M.t0) / 1000 });
+    M.rec.stop();
+  });
+}
+function stopMedia() {
+  try { if (M.rec && M.rec.state !== 'inactive') M.rec.stop(); } catch (e) {}
+  if (M.stream) M.stream.getTracks().forEach(t => t.stop());
+  M.stream = null; M.an = null; cancelAnimationFrame(M.raf);
+  if (M.wake) { M.wake.release().catch(() => {}); M.wake = null; }
+}
+async function keepAwake() { try { if ('wakeLock' in navigator && !M.wake) M.wake = await navigator.wakeLock.request('screen'); } catch (e) {} }
+window.addEventListener('beforeunload', e => {
+  if ((M.rec && M.rec.state === 'recording') || S.uploading) { e.preventDefault(); e.returnValue = ''; }
+});
+
+/* ─────────────────────────── HỌC SINH ─────────────────────────── */
+const S = { tab: 'speech', st: null, phase: '', done: null, uploading: false, finishing: false, rolling: false, autoFor: '' };
+function hsCred() { return store.get(KEY_HS) || {}; }
+function startStudent() {
+  const c = hsCred();
+  setWho(`${esc(c.ten)} さん<button id="lo">ログアウト</button>`);
+  $('#lo').onclick = () => { if (!S.uploading && !(M.rec && M.rec.state === 'recording')) logout(); };
+  hsTab('speech');
+}
+function hsTab(k) {
+  if (k !== 'speech' && (busy() || ['prep', 'speak'].includes(S.phase))) return alert('スピーチが終わってから見てください。');
+  S.tab = k;
+  setTabs([['speech', 'スピーチ'], ['mine', '自分の記録']], k, hsTab);
+  clearTimers();
+  if (k === 'speech') hsSpeech(); else hsMine();
+}
+function busy() { return S.uploading || S.finishing || S.rolling || (M.rec && M.rec.state === 'recording'); }
+
+/* --- スピーチ --- */
+async function hsSpeech() {
+  app.innerHTML = `<div class="card"><p class="muted">読み込み中…</p></div>`;
+  S.phase = '';
+  await hsPoll(true);
+  every(250, hsRender);
+  every(20000, () => { if (['idle', 'late', 'broken'].includes(S.phase)) hsPoll(); });
+}
+async function hsPoll(first) {
+  try {
+    const r = await api('trangThai', hsCred());
+    S.st = r;
+    if (first) S.phase = '';
+    const c = $('#leftInfo'); if (c) c.innerHTML = leftHtml();
+  } catch (e) {
+    if (/PIN/.test(e.message)) return logout();
+    if (first) app.innerHTML = `<div class="card"><div class="msg ng">${esc(e.message)}</div></div>`;
+  }
+}
+function phaseOf() {
+  const r = S.st; if (!r) return 'load';
+  if (S.uploading || S.finishing) return 'upload';
+  if (S.rolling) return 'roll';
+  if (S.done) return S.done.ok ? 'done' : 'failed';
+  const b = r.bai;
+  if (!b) return 'idle';
+  if (M.rec && M.rec.state === 'recording') return 'rec';
+  if (b.trangThai === 'dang-noi') return 'broken';
+  const prepEnd = b.nhanDe + b.prepS * 1000;
+  if (now() < prepEnd) return 'prep';
+  if (now() < prepEnd + 60000) return 'speak';   // vừa hết giờ chuẩn bị → tự ghi âm
+  return 'late';                                   // quay lại trang khi đã hết giờ chuẩn bị từ lâu
+}
+function partAt(s) { let p = PARTS[0][0]; PARTS.forEach(x => { if (s >= x[1]) p = x[0]; }); return p; }
+function mapHtml(tot) {
+  return `<div class="map">${PARTS.map(p => `<div style="background:${p[2]}">${p[0]}<br>${mmss(Math.min(p[1], tot))}〜</div>`).join('')}</div>`;
+}
+function themeHtml(b) {
+  return `<div class="muted">${b.lan ? b.lan + '回目' : ''}</div>
+    <div class="theme"><span class="theme-no">テーマ ${b.deSo}</span><br>${esc(b.de)}</div>`;
+}
+function leftHtml() {
+  const r = S.st; if (!r) return '';
+  return `今のサイクル（${r.vong}周目）：のこり <b>${r.conLai}</b> / ${r.tong} テーマ。
+    同じテーマは、ぜんぶ終わるまで出ません。`;
+}
+function hsRender() {
+  const ph = phaseOf();
+  if (ph !== S.phase) { S.phase = ph; hsDraw(ph); }
+  const b = S.st && S.st.bai;
+  if (!b) return;
+  const prepEnd = b.nhanDe + b.prepS * 1000;
+  if (ph === 'prep') {
+    const left = (prepEnd - now()) / 1000;
+    const c = $('#clk'); if (c) { c.textContent = mmss(Math.ceil(left)); c.className = 'clock' + (left < 30 ? ' hot' : left < 60 ? ' warn' : ''); }
+  }
+  if (ph === 'speak' && S.autoFor !== b.id) { S.autoFor = b.id; hsAutoStart(); }
+  if (ph === 'rec') {
+    const el = (Date.now() - M.t0) / 1000;
+    const c = $('#clk'); if (c) { c.textContent = mmss(el); c.className = 'clock' + (b.speakS - el < 30 ? ' hot' : b.speakS - el < 60 ? ' warn' : ''); }
+    const f = $('#fill'); if (f) f.style.width = Math.min(100, el / b.speakS * 100) + '%';
+    const np = $('#nowpart'); if (np) np.textContent = 'いま：' + partAt(el);
+    if (el >= b.speakS) hsFinish();
+  }
+}
+function hsDraw(ph) {
+  const r = S.st, b = r && r.bai;
+  if (ph === 'load') return;
+  if (ph === 'idle') {
+    app.innerHTML = `<div class="card" style="text-align:center">
+      <h2>テーマを引いて、スピーチの練習をしましょう</h2>
+      <p class="muted" id="leftInfo">${leftHtml()}</p>
+      <div class="roll" id="rollBox">?</div>
+      <button class="btn big" id="draw">🎲 テーマを引く</button>
+      <div class="err" id="drawErr"></div>
+      <p class="muted" style="margin-top:14px">テーマを引くと、すぐに<b>準備時間（${mmss(r.prepS)}）</b>が始まります。準備時間が終わると、<b>自動で録音</b>が始まります（${mmss(r.speakS)}）。<br>
+      一度引いたテーマは、引き直すことができません。</p>
+    </div>
+    <div class="card">${micTestHtml()}
+      <p class="muted" style="margin:8px 0 0">静かな場所で、できればイヤホンを使ってください。</p></div>`;
+    wireMicTest();
+    $('#draw').onclick = hsDrawTopic;
+  } else if (ph === 'roll') {
+    app.innerHTML = `<div class="card" style="text-align:center">
+      <h2>テーマを引いています…</h2>
+      <div class="roll spin" id="rollBox">?</div>
+    </div>`;
+  } else if (ph === 'prep') {
+    keepAwake();
+    app.innerHTML = `<div class="card">
+      ${themeHtml(b)}
+      <div class="phase" style="margin-top:14px">準備時間（のこり）</div>
+      <div class="clock" id="clk">--:--</div>
+      <p>キーワードだけ紙に書きましょう。準備が終わると、<b>自動で録音が始まります</b>（${mmss(b.speakS)}）。</p>
+      ${mapHtml(b.speakS)}
+      <div style="margin-top:14px"><button class="btn sub" id="early">準備ができた → 今すぐ話し始める</button></div>
+    </div>
+    <div class="card">${micTestHtml(true)}</div>`;
+    $('#early').onclick = () => { if (confirm('準備を終わって、録音を始めますか？')) hsStart(); };
+    getMic().then(() => { const m = $('#micState'); if (m) m.innerHTML = '<span class="badge g">マイクOK</span>'; })
+      .catch(e => { const m = $('#micState'); if (m) m.innerHTML = `<span class="badge">${esc(micErr(e))}</span>`; });
+  } else if (ph === 'speak') {
+    app.innerHTML = `<div class="card">
+      ${themeHtml(b)}
+      <div class="phase" style="margin-top:14px">スピーチ時間</div>
+      <div class="clock" id="clk">0:00</div>
+      <div class="msg" id="speakMsg">録音を始めています…</div>
+      <button class="btn big hide" id="manualStart">● 録音スタート</button>
+    </div>${uploadHtml()}`;
+    $('#manualStart').onclick = () => hsStart();
+    wireUpload();
+  } else if (ph === 'rec') {
+    app.innerHTML = `<div class="card">
+      ${themeHtml(b)}
+      <div class="phase" style="margin-top:14px"><span class="rec-dot"></span>録音中</div>
+      <div class="clock" id="clk">0:00</div>
+      <div class="meter"><i></i></div>
+      ${barHtml(b.speakS)}
+      <div class="nowpart" id="nowpart"></div>
+      <div style="margin-top:16px"><button class="btn sub" id="endBtn">スピーチを終わる</button></div>
+    </div>`;
+    $('#endBtn').onclick = () => { if (confirm('スピーチを終わって、提出しますか？')) hsFinish(); };
+  } else if (ph === 'upload') {
+    app.innerHTML = `<div class="card"><h2>提出しています…</h2><p class="muted">このページを閉じないでください。</p></div>`;
+  } else if (ph === 'failed') {
+    app.innerHTML = `<div class="card">
+      <div class="msg ng">提出できませんでした：${esc(S.done.err || '')}</div>
+      <button class="btn" id="retry">もう一度提出する</button>
+      <a class="btn sub" id="dl" style="margin-left:8px;text-decoration:none" download="speech.${S.done.blob && /mp4/.test(S.done.blob.type) ? 'm4a' : 'webm'}">録音をパソコンに保存</a>
+      <p class="muted">何回も失敗する場合は、保存した録音を先生に送ってください。</p>
+    </div>`;
+    $('#dl').href = URL.createObjectURL(S.done.blob);
+    $('#retry').onclick = () => hsUpload(S.done.blob, S.done.giay, S.done.baiId);
+  } else if (ph === 'done') {
+    const d = S.done;
+    app.innerHTML = `<div class="card">
+      ${d.bai ? themeHtml(d.bai) : ''}
+      <div class="msg ok">提出しました（${mmss(d.giay)}）。おつかれさまでした！</div>
+      ${d.url ? `<audio controls src="${d.url}"></audio>` : ''}
+      <p class="muted">自分の録音を聞いて、「導入・理由・反対意見・結論」がはっきりしているか確認しましょう。先生のコメントは「自分の記録」に出ます。</p>
+      <div class="inline"><button class="btn" id="next">次のテーマへ</button><button class="btn sub" id="toMine">自分の記録を見る</button></div>
+    </div>`;
+    fixDur(app);
+    $('#next').onclick = async () => { S.done = null; S.phase = ''; await hsPoll(); };
+    $('#toMine').onclick = () => { S.done = null; hsTab('mine'); };
+  } else if (ph === 'broken' || ph === 'late') {
+    app.innerHTML = `<div class="card">${themeHtml(b)}
+      <div class="msg ng">${ph === 'broken'
+        ? '録音が途中で止まりました（ページを閉じた、または再読み込みした）。'
+        : '準備時間はもう終わりました。'}
+        準備ができていたら、もう一度録音してください（${mmss(b.speakS)}）。</div>
+      <div class="inline"><button class="btn big" id="again">● 録音スタート</button>
+      <button class="btn sub" id="giveUp">このテーマをやめる</button></div>
+      <p class="muted">「やめる」と、このテーマは使ったことになります（先生にも記録が見えます）。</p>
+    </div>${uploadHtml()}`;
+    $('#again').onclick = () => hsStart();
+    $('#giveUp').onclick = async () => {
+      if (!confirm('このテーマをやめて、新しいテーマを引けるようにしますか？')) return;
+      try { await api('boDe', Object.assign({ baiId: b.id }, hsCred())); S.phase = ''; await hsPoll(); }
+      catch (e) { alert(e.message); }
+    };
+    wireUpload();
+  }
+}
+async function hsDrawTopic() {
+  if (S.rolling) return;
+  S.rolling = true; S.phase = '';
+  const nums = (S.st && S.st.soMo && S.st.soMo.length) ? S.st.soMo : [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const t0 = Date.now();
+  const anim = setInterval(() => { const el = $('#rollBox'); if (el) el.textContent = nums[Math.floor(Math.random() * nums.length)]; }, 70);
+  getMic().catch(() => {});   // xin quyền micro sớm, trong lúc bốc
+  try {
+    const r = await api('bocDe', hsCred());
+    const wait = 1400 - (Date.now() - t0); if (wait > 0) await new Promise(ok => setTimeout(ok, wait));
+    clearInterval(anim);
+    const el = $('#rollBox'); if (el) { el.classList.remove('spin'); el.textContent = r.bai.deSo; }
+    await new Promise(ok => setTimeout(ok, 700));
+    S.st.bai = r.bai;
+  } catch (e) {
+    clearInterval(anim);
+    S.rolling = false; S.phase = '';
+    setTimeout(() => { const er = $('#drawErr'); if (er) er.textContent = e.message; }, 300);
+    return;
+  }
+  S.rolling = false; S.phase = '';
+  hsPoll();
+}
+function barHtml(tot) {
+  return `<div class="bar"><div class="fill" id="fill"></div></div>
+    <div class="parts">${PARTS.filter(p => p[1] < tot).map(p => `<span style="left:${(p[1] / tot * 100).toFixed(1)}%;${p[1] === 0 ? 'transform:none' : ''}"><b>${p[0]}</b>${mmss(p[1])}</span>`).join('')}
+    <span style="left:100%;transform:translateX(-100%);text-align:right"><b>終わり</b>${mmss(tot)}</span></div>`;
+}
+function micTestHtml(inPrep) {
+  return `<div class="inline"><b>マイク</b> <span id="micState">${inPrep ? '準備中…' : ''}</span>
+    ${inPrep ? '' : '<button class="btn sm sub" id="micTest">マイクをテストする</button>'}</div>
+    <div class="meter" style="margin-top:8px"><i></i></div>
+    <p class="muted" style="margin:6px 0 0">声を出すと、緑のバーが動きます。動かない場合は、ブラウザのマイクの許可を確認してください。</p>`;
+}
+function wireMicTest() {
+  const b = $('#micTest'); if (!b) return;
+  b.onclick = async () => {
+    try { await getMic(); $('#micState').innerHTML = '<span class="badge g">マイクOK</span>'; }
+    catch (e) { $('#micState').innerHTML = `<span class="badge">${esc(micErr(e))}</span>`; }
+  };
+}
+function micErr(e) {
+  if (e && (e.name === 'NotAllowedError' || e.name === 'SecurityError')) return 'マイクが許可されていません（アドレスバーの🔒から許可してください）';
+  if (e && e.name === 'NotFoundError') return 'マイクが見つかりません';
+  return (e && e.message) || 'マイクのエラー';
+}
+function uploadHtml() {
+  return `<div class="card"><h2 style="font-size:15px">うまく録音できない場合</h2>
+    <p class="muted">スマホの録音アプリで録音して、ファイルを提出することもできます。</p>
+    <input type="file" id="upFile" accept="audio/*"> <button class="btn sm" id="upBtn">ファイルを提出</button>
+    <div class="err" id="upErr"></div></div>`;
+}
+function wireUpload() {
+  const b = $('#upBtn'); if (!b) return;
+  b.onclick = async () => {
+    const f = $('#upFile').files[0];
+    if (!f) return $('#upErr').textContent = 'ファイルを選んでください。';
+    if (f.size > 25 * 1024 * 1024) return $('#upErr').textContent = 'ファイルが大きすぎます（25MBまで）。';
+    let giay = 0;
+    try { giay = await new Promise(ok => { const a = new Audio(); a.onloadedmetadata = () => ok(isFinite(a.duration) ? a.duration : 0); a.onerror = () => ok(0); a.src = URL.createObjectURL(f); }); } catch (e) {}
+    hsUpload(f, giay);
+  };
+}
+async function hsAutoStart() {
+  try { await getMic(); await hsStart(); }
+  catch (e) {
+    const m = $('#speakMsg'); if (m) { m.className = 'msg ng'; m.textContent = micErr(e) + '　下のボタンを押してください。'; }
+    const b = $('#manualStart'); if (b) b.classList.remove('hide');
+  }
+}
+async function hsStart() {
+  try {
+    await getMic();
+    if (!window.MediaRecorder) throw new Error('このブラウザでは録音できません。下の「ファイルを提出」を使ってください。');
+    startRec(); keepAwake();
+    S.phase = ''; // vẽ lại thành màn hình ghi âm
+    api('batDauNoi', Object.assign({ baiId: S.st.bai.id }, hsCred())).catch(() => {});
+  } catch (e) {
+    const m = $('#speakMsg'); if (m) { m.className = 'msg ng'; m.textContent = micErr(e); }
+    const b = $('#manualStart'); if (b) b.classList.remove('hide');
+    if (!m) alert(micErr(e));
+  }
+}
+async function hsFinish() {
+  if (S.finishing) return; S.finishing = true;
+  const out = await stopRec();
+  S.finishing = false;
+  if (!out) return;
+  hsUpload(out.blob, out.giay);
+}
+async function hsUpload(blob, giay, baiId) {
+  const bai = S.st && S.st.bai;
+  baiId = baiId || (bai && bai.id);
+  S.uploading = true; S.phase = '';
+  try {
+    const b64 = await blobToB64(blob);
+    const r = await api('nopBai', Object.assign({ baiId, mime: blob.type || 'audio/webm', b64, giay }, hsCred()));
+    S.done = { baiId, ok: true, giay: r.giay || giay, url: URL.createObjectURL(blob), bai };
+    if (S.st) S.st.bai = null;
+  } catch (e) {
+    S.done = { baiId, ok: false, err: e.message, blob, giay, bai };
+  }
+  S.uploading = false; S.phase = '';
+  if (M.wake) { M.wake.release().catch(() => {}); M.wake = null; }
+  hsPoll().then(() => { if (S.done && S.done.ok && S.st) S.st.bai = null; });
+}
+
+/* --- 自分の記録 --- */
+async function hsMine() {
+  app.innerHTML = `<div class="card"><p class="muted">読み込み中…</p></div>`;
+  let r;
+  try { r = await api('baiCuaToi', hsCred()); }
+  catch (e) { app.innerHTML = `<div class="card"><div class="msg ng">${esc(e.message)}</div></div>`; return; }
+  app.innerHTML = `<div class="card"><h2>自分の記録</h2><p class="muted">提出したスピーチ（${r.bai.length}回）と、先生からのコメントです。</p></div><div id="mlist"></div>`;
+  const box = $('#mlist');
+  if (!r.bai.length) box.innerHTML = '<div class="card muted">まだ提出した録音がありません。</div>';
+  r.bai.forEach(b => {
+    const gv = b.nx[0];
+    const it = document.createElement('div');
+    it.className = 'item';
+    it.innerHTML = `<div class="head"><div><span class="t">${b.lan}回目</span>　テーマ ${b.deSo}
+        ${gv ? `<span class="badge">先生${gv.diem ? '：' + esc(gv.diem) : 'のコメントあり'}</span>` : ''}
+        <div class="muted">${mmss(b.giay)}・${new Date(b.nopLuc).toLocaleString('ja-JP')}</div></div><span class="muted">▼</span></div>
+      <div class="body hide"></div>`;
+    it.querySelector('.head').onclick = async () => {
+      const body = it.querySelector('.body');
+      if (!body.classList.contains('hide')) return body.classList.add('hide');
+      body.classList.remove('hide');
+      body.innerHTML = `<p class="muted">${esc(b.de)}</p><p class="muted">録音を読み込み中…</p>`;
+      let src = '';
+      try { const au = await api('nghe', Object.assign({ baiId: b.id }, hsCred())); src = b64ToUrl(au.b64, au.mime); } catch (e) {}
+      body.innerHTML = `<p class="muted">${esc(b.de)}</p>${src ? `<audio controls src="${src}"></audio>` : ''}
+        ${gv ? nxHtml(gv) : '<p class="muted">まだ先生のコメントはありません。</p>'}`;
+      fixDur(body);
+    };
+    box.appendChild(it);
+  });
+}
+
+/* ─────────────────────────── GIÁO VIÊN ─────────────────────────── */
+const T = { tab: 'watch', data: null, hs: '', chuaCham: false };
+function gvCred() { return { mk: store.get(KEY_GV) }; }
+function startTeacher() {
+  setWho(`Giáo viên<button id="lo">Đăng xuất</button>`);
+  $('#lo').onclick = logout;
+  gvTab('watch');
+}
+function gvTab(k) {
+  T.tab = k; clearTimers();
+  setTabs([['watch', 'Theo dõi'], ['grade', 'Chấm bài'], ['set', 'Cài đặt đề & thời gian']], k, gvTab);
+  if (k === 'watch') gvWatch(); else if (k === 'grade') gvGrade(); else gvSet();
+}
+async function gvLoad() {
+  try { T.data = await api('gvTongQuan', gvCred()); return T.data; }
+  catch (e) { if (/mật khẩu/.test(e.message)) { logout(); } throw e; }
+}
+function gvStatus(b) {
+  if (!b) return { t: '', c: '' };
+  const prepEnd = b.nhanDe + b.prepS * 1000;
+  if (b.trangThai === 'dang-noi') {
+    const st = b.batDauNoi || prepEnd;
+    return now() < st + b.speakS * 1000 + 60000 ? { t: 'đang nói · đề ' + b.deSo, c: 'y' } : { t: 'bỏ dở · đề ' + b.deSo, c: '' };
+  }
+  if (now() < prepEnd) return { t: `chuẩn bị · đề ${b.deSo} (còn ${mmss((prepEnd - now()) / 1000)})`, c: 'b' };
+  if (now() < prepEnd + b.speakS * 1000) return { t: 'đến giờ nói · đề ' + b.deSo, c: 'y' };
+  return { t: 'bốc đề nhưng chưa nộp · đề ' + b.deSo, c: '' };
+}
+const ngay = ms => ms ? new Date(ms).toLocaleString('vi-VN', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+async function gvWatch() {
+  app.innerHTML = `<div class="card"><p class="muted">Đang tải…</p></div>`;
+  try { await gvLoad(); } catch (e) { app.innerHTML = `<div class="card"><div class="msg ng">${esc(e.message)}</div></div>`; return; }
+  app.innerHTML = `<div class="card" id="watchCard"></div>`;
+  gvWatchDraw();
+  every(15000, async () => { try { await gvLoad(); gvWatchDraw(); } catch (e) {} });
+  every(1000, gvWatchTick);
+}
+function gvWatchDraw() {
+  const box = $('#watchCard'); if (!box) return;
+  const d = T.data, cd = d.caiDat;
+  const tongNop = d.bang.reduce((s, x) => s + x.nop, 0), tongCham = d.bang.reduce((s, x) => s + x.chuaCham, 0);
+  box.innerHTML = `<h2>Tình hình tự luyện</h2>
+    <div class="muted">Đang mở ${d.tong} đề · chuẩn bị ${mmss(cd.prepS)} · nói ${mmss(cd.speakS)} · tổng ${tongNop} bài đã nộp · <b>${tongCham}</b> bài chưa chấm</div>
+    <table class="st" style="margin-top:10px"><thead><tr><th>Học sinh</th><th>Đã nộp</th><th>Bỏ đề</th><th>Chưa chấm</th><th>Vòng hiện tại</th><th>Đang làm</th><th>Lần cuối</th><th></th></tr></thead>
+    <tbody>${d.bang.map((x, i) => `<tr><td>${esc(x.hs)}</td><td>${x.nop}</td><td>${x.bo || ''}</td>
+      <td>${x.chuaCham ? `<b>${x.chuaCham}</b>` : ''}</td>
+      <td class="muted">vòng ${x.vong}: còn ${x.conLai}/${d.tong}</td>
+      <td data-st="${i}"></td><td class="muted">${ngay(x.cuoi)}</td>
+      <td>${x.nop ? `<button class="btn sm sub" data-hs="${esc(x.hs)}">Chấm →</button>` : ''}</td></tr>`).join('')}</tbody></table>
+    <p class="muted">"Vòng": mỗi em bốc lần lượt hết các đề đang mở rồi mới sang vòng mới; "còn" là số đề em chưa gặp trong vòng này. Bảng tự cập nhật mỗi 15 giây.</p>`;
+  box.querySelectorAll('[data-hs]').forEach(btn => btn.onclick = () => { T.hs = btn.dataset.hs; T.chuaCham = false; gvTab('grade'); });
+  gvWatchTick();
+}
+function gvWatchTick() {
+  const d = T.data; if (!d) return;
+  d.bang.forEach((x, i) => {
+    const td = document.querySelector(`[data-st="${i}"]`); if (!td) return;
+    const s = gvStatus(x.dang);
+    td.innerHTML = s.t ? `<span class="badge ${s.c}">${s.t}</span>` : '';
+  });
+}
+
+async function gvGrade() {
+  app.innerHTML = `<div class="card"><p class="muted">Đang tải…</p></div>`;
+  try { if (!T.data) await gvLoad(); } catch (e) { app.innerHTML = `<div class="card"><div class="msg ng">${esc(e.message)}</div></div>`; return; }
+  app.innerHTML = `<div class="card"><h2>Chấm bài</h2>
+    <div class="inline">
+      <label class="f">Học sinh<select id="gHs"><option value="">— Tất cả —</option>${T.data.bang.map(x => `<option ${x.hs === T.hs ? 'selected' : ''}>${esc(x.hs)}</option>`).join('')}</select></label>
+      <label><input type="checkbox" id="gCc" ${T.chuaCham ? 'checked' : ''}> Chỉ bài chưa chấm</label>
+    </div>
+    <p class="muted">Học sinh thấy điểm và nhận xét của cô ở mục "自分の記録". Bài mới nhất ở trên.</p></div>
+    <div id="glist"></div>`;
+  $('#gHs').onchange = () => { T.hs = $('#gHs').value; gvGradeList(); };
+  $('#gCc').onchange = () => { T.chuaCham = $('#gCc').checked; gvGradeList(); };
+  gvGradeList();
+}
+async function gvGradeList() {
+  const box = $('#glist'); box.innerHTML = '<p class="muted">Đang tải…</p>';
+  let r;
+  try { r = await api('gvDsBai', Object.assign({ hs: T.hs, chuaCham: T.chuaCham }, gvCred())); }
+  catch (e) { box.innerHTML = `<div class="msg ng">${esc(e.message)}</div>`; return; }
+  box.innerHTML = r.bai.length ? '' : '<div class="card muted">Không có bài nào.</div>';
+  r.bai.forEach(b => {
+    const it = document.createElement('div'); it.className = 'item';
+    it.innerHTML = `<div class="head"><div><span class="t">${esc(b.hs)}</span> · lần ${b.lan} ${b.daCham ? `<span class="badge g">đã chấm${b.daCham !== '✓' ? ': ' + esc(b.daCham) : ''}</span>` : ''}
+      <div class="muted">Đề ${b.deSo} · ${mmss(b.giay)} · nộp ${ngay(b.nopLuc)}</div></div><span class="muted">▼</span></div><div class="body hide"></div>`;
+    it.querySelector('.head').onclick = () => gvOpen(it, b);
+    box.appendChild(it);
+  });
+}
+async function gvOpen(it, b) {
+  const body = it.querySelector('.body');
+  if (!body.classList.contains('hide')) return body.classList.add('hide');
+  body.classList.remove('hide');
+  body.innerHTML = '<p class="muted">Đang tải bản ghi…</p>';
+  try {
+    const [au, nx] = await Promise.all([api('nghe', Object.assign({ baiId: b.id }, gvCred())), api('gvNhanXet', Object.assign({ baiId: b.id }, gvCred()))]);
+    const g = nx.nx || {};
+    body.innerHTML = `<p class="muted">Đề ${b.deSo}: ${esc(b.de)}</p>
+      <audio controls preload="metadata" src="${b64ToUrl(au.b64, au.mime)}"></audio>
+      <div class="gform">
+        ${critForm('g', g.tc)}
+        <label class="f">Điểm (ghi tự do, ví dụ 8/10)<input data-f="diem" value="${esc(g.diem || '')}" style="max-width:200px"></label>
+        <div class="ts"><b>よかったところ</b> <button type="button" class="btn sm sub" data-ts="tot">⏱ chèn thời điểm</button></div>
+        <textarea data-f="tot">${esc(g.tot || '')}</textarea>
+        <div class="ts"><b>直すところ</b> <button type="button" class="btn sm sub" data-ts="sua">⏱ chèn thời điểm</button></div>
+        <textarea data-f="sua">${esc(g.sua || '')}</textarea>
+        <div class="ts"><b>Chữa câu</b> (mỗi dòng: câu em nói → câu đúng) <button type="button" class="btn sm sub" data-ts="chua">⏱ chèn thời điểm</button></div>
+        <textarea data-f="chua" style="min-height:110px" placeholder="[1:05] 勉強より練習を優先するのもいい → 勉強より練習を優先してもいい">${esc(g.chua || '')}</textarea>
+        <div style="margin-top:8px"><button class="btn" data-save>Lưu</button> <span class="muted" data-st></span></div>
+      </div>`;
+    fixDur(body);
+    const audio = body.querySelector('audio');
+    wireCrit(body);
+    body.querySelectorAll('[data-ts]').forEach(btn => btn.onclick = () => insertTime(body.querySelector(`[data-f="${btn.dataset.ts}"]`), audio));
+    body.querySelector('[data-save]').onclick = async () => {
+      const st = body.querySelector('[data-st]'); st.textContent = 'Đang lưu…';
+      const v = k => body.querySelector(`[data-f="${k}"]`).value.trim();
+      try {
+        await api('gvCham', Object.assign({ baiId: b.id, tc: readCrit(body.querySelector('.gform')), diem: v('diem'), tot: v('tot'), sua: v('sua'), chua: v('chua') }, gvCred()));
+        st.textContent = 'Đã lưu ✓';
+        if (!it.querySelector('.badge.g')) it.querySelector('.head .t').insertAdjacentHTML('afterend', ' <span class="badge g">đã chấm</span>');
+      } catch (e) { st.textContent = e.message; }
+    };
+  } catch (e) { body.innerHTML = `<div class="msg ng">${esc(e.message)}</div>`; }
+}
+
+async function gvSet() {
+  app.innerHTML = `<div class="card"><p class="muted">Đang tải…</p></div>`;
+  try { await gvLoad(); } catch (e) { app.innerHTML = `<div class="card"><div class="msg ng">${esc(e.message)}</div></div>`; return; }
+  const d = T.data, cd = d.caiDat;
+  const groups = [...new Set(d.de.map(x => x.nhom))];
+  const mo = new Set(d.tong === d.de.length && !cd.mo ? d.de.map(x => x.so) : []);
+  if (!mo.size) { // đọc lại danh sách đề đang mở
+    const s = cd.mo.replace(/\s*[-–~〜]\s*/g, '-').split(/[,、;\s]+/);
+    s.forEach(p => { const m = p.match(/^(\d+)-(\d+)$/); if (m) { for (let i = +m[1]; i <= +m[2]; i++) mo.add(i); } else if (/^\d+$/.test(p)) mo.add(+p); });
+  }
+  app.innerHTML = `<div class="card">
+    <h2>Cài đặt đề & thời gian</h2>
+    <div class="inline">
+      <label class="f">Chuẩn bị (phút)<input id="sPrep" type="number" min="0.2" step="0.5" value="${cd.prepS / 60}" style="width:110px"></label>
+      <label class="f">Nói (phút)<input id="sSpeak" type="number" min="0.2" step="0.5" value="${cd.speakS / 60}" style="width:110px"></label>
+    </div>
+    <p style="margin:4px 0 8px"><b>Đề mở để học sinh bốc</b> <span class="muted">(học sinh đi hết các đề được tích rồi mới gặp lại đề cũ)</span></p>
+    <div class="inline" style="margin-bottom:6px">
+      <button class="btn sm sub" id="selAll">Chọn tất cả</button><button class="btn sm sub" id="selNone">Bỏ chọn</button>
+      ${groups.map(g => `<button class="btn sm sub" data-grp="${esc(g)}">Chỉ nhóm: ${esc(g)}</button>`).join('')}
+    </div>
+    <div class="topics">${groups.map(g => `<h4>${esc(g)}</h4>` + d.de.filter(x => x.nhom === g).map(x => `<label><input type="checkbox" value="${x.so}" ${mo.has(x.so) ? 'checked' : ''}> <span><b>${x.so}.</b> ${esc(x.de)}</span></label>`).join('')).join('')}</div>
+    <div style="margin-top:12px" class="inline"><button class="btn" id="sSave">Lưu cài đặt</button><span class="muted" id="sMsg"></span></div>
+    <p class="muted">Thay đổi áp dụng cho các lần bốc đề <b>sau khi lưu</b>; bài học sinh đang làm giữ nguyên thời gian cũ. Muốn thêm hay sửa đề, sửa trong trang tính "Đề" của Google Sheet.</p>
+  </div>`;
+  const boxes = () => [...app.querySelectorAll('.topics input')];
+  $('#selAll').onclick = () => boxes().forEach(b => b.checked = true);
+  $('#selNone').onclick = () => boxes().forEach(b => b.checked = false);
+  app.querySelectorAll('[data-grp]').forEach(btn => btn.onclick = () => {
+    const nums = new Set(d.de.filter(x => x.nhom === btn.dataset.grp).map(x => String(x.so)));
+    boxes().forEach(b => b.checked = nums.has(b.value));
+  });
+  $('#sSave').onclick = async () => {
+    const ds = boxes().filter(b => b.checked).map(b => Number(b.value));
+    if (!ds.length) return $('#sMsg').textContent = 'Chưa chọn đề nào.';
+    $('#sSave').disabled = true; $('#sMsg').textContent = 'Đang lưu…';
+    try {
+      await api('gvLuuCaiDat', Object.assign({ prepPhut: Number($('#sPrep').value), noiPhut: Number($('#sSpeak').value), ds }, gvCred()));
+      $('#sMsg').textContent = `Đã lưu ✓ (${ds.length} đề)`;
+    } catch (e) { $('#sMsg').textContent = e.message; }
+    $('#sSave').disabled = false;
+  };
+}
+
+/* ─────────────────────────── khởi động ─────────────────────────── */
+(function boot() {
+  if (store.get(KEY_GV)) return startTeacher();
+  if (store.get(KEY_HS)) return startStudent();
+  showLogin();
+})();
+</script>
+</body>
+</html>
